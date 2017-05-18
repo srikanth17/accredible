@@ -1,0 +1,19 @@
+{
+  "name": "accredible-fullstack-assessment",
+  "version": "1.0.0",
+  "main": "server.js",
+  "author": "David \"oodavid\" King",
+  "dependencies": {
+    "bluebird": "^3.5.0",
+    "express": "^4.15.2",
+    "node-horseman": "^3.2.0",
+    "node-phantom": "^0.2.5",
+    "phantom": "^4.0.2",
+    "phantomjs-prebuilt": "^2.1.14",
+    "webpage": "^0.3.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/accredible/accredible-fullstack-assessment.git"
+  }
+}

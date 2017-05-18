@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+<head>
+	<title>Accredible :: Fullstack Assessment - Starter Repo</title>
+	<link rel="stylesheet" href="css/styles.css">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body>
+	<div class="top-bar"></div>
+	<div class="container" ng-controller="AppCtrl">
+		<div class="panel panel-default certs" ng-repeat="certificate in certificates">
+			<div class="row">
+				<div class="col-md-8">
+					<h3>{{certificate.certName}}</h3>
+					<p><strong>ID: </strong>{{certificate.id}}</p>
+					<p><strong>Issued on: </strong>{{certificate.issuedDate}}</p>
+					<p><i class="fa fa-check-circle" aria-hidden="true"></i> <strong>Verified: </strong>{{certificate.title}}</p>
+					<p><a href="{{certificate.url}}">{{certificate.url}}</a></p>
+				</div>
+				<div class="col-md-4">
+					<img ng-src="{{certificate.image}}" class="pull-right" height="150">
+				</div>
+			</div>
+		</div>
+		<div class="panel panel-default spin" ng-if="spinningWheel">
+			<h4>Verifying Credential <i class="fa fa-spinner fa-spin"></i></h4>
+		</div>
+		<div class="alert alert-danger" ng-if="showError" role="alert">
+			{{errorMessage}}
+		</div>
+		<div class="panel panel-default" ng-style="{'opacity' : credForm.url.$touched || credForm.$dirty ? 1 : 0.5}">
+			<div class="panel-body">
+				<form name="credForm" novalidate>
+					<div class="form-group required"
+						 ng-class="{'has-error': credForm.url.$touched && credForm.url.$invalid}">
+						<label>+ Add a credential from Magento</label><br />
+						<input type="text"
+							   name="url"
+							   placeholder="magento URL"
+							   class="form-contact"
+							   ng-model="url"
+							   style="width: 100%;"
+							   required />
+						<div ng-show="credForm.$submitted || credForm.url.$touched">
+							<div ng-show="credForm.url.$error.required"
+								 class="help-block">
+								Enter a URL to Verify
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<input type="submit"
+							   ng-click="addCredential()"
+							   ng-disabled="credForm.$invalid"
+							   class="btn btn-primary pull-right"
+							   value="VERIFY" />
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+	<script src="js/controller.js"></script>
+</body>
+</html>

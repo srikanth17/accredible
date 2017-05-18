@@ -1,0 +1,27 @@
+.spin {
+    text-align: center;
+    padding-bottom: 50px;
+    padding-top: 50px;
+    opacity: 0.5;
+}
+.fa-spin {
+    margin-left: 25px;
+}
+.certs {
+    min-height: 200px;
+}
+.certs > .row {
+    padding-left: 40px;
+}
+.top-bar {
+    height: 40px;
+    background-color: cadetblue;
+    margin-bottom: 50px;
+}
+.pull-right {
+    padding-top: 20px;
+    padding-right: 40px;
+}
+.fa-check-circle {
+    color: cornflowerblue;
+}
