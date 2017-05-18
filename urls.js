@@ -29,19 +29,26 @@ function getUrl(url){
                     console.log(status);
                     return _page.property('content')
                 }).then(function(content){
-                    //setTimeout(function() {
-                        _page.evaluate(function() {
+                    _page.evaluate(function() {
+                        if(document.URL.indexOf('magento') !== -1) {
+                            return magentoCertificateExtractor();
+                        } else {
+                            resolve({
+                                certficates: null
+                            });
+                        }
+                        function magentoCertificateExtractor() {
                             function convertDate(date) {
                                 var monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
                                 var parts = date.split('/');
                                 return monthNames[parts[0]-1] + ' ' + parts[1] + ', ' + parts[2];
                             }
-                            function parseDOM(cert) {
+                            function parseMagentoDOM(cert, index) {
                                 var userObj = {};
                                 userObj.certName = (cert.getElementsByClassName('col-xs-12')[0].textContent).trim();
                                 userObj.id = (cert.getElementsByClassName('col-xs-12')[1].textContent).trim();
                                 userObj.issuedDate = convertDate((cert.getElementsByClassName('col-xs-12')[2].textContent).trim());
-                                userObj.image = document.getElementsByClassName('cert-img')[0].getElementsByTagName('img')[0]
+                                userObj.image = document.getElementsByClassName('cert-img')[0].getElementsByTagName('img')[index]
                                     .getAttribute('src');
                                 userObj.url = document.URL;
                                 userObj.title = document.title;
@@ -53,23 +60,23 @@ function getUrl(url){
                             var maxLength = oddCerts.length > evenCerts.length ? oddCerts.length : evenCerts.length;
                             for (var i = 0; i < maxLength; i++) {
                                 if (i < oddCerts.length) {
-                                    var userObjOdd = parseDOM(oddCerts[i]);
+                                    var userObjOdd = parseMagentoDOM(oddCerts[i], i);
                                     userArray.push(userObjOdd);
                                 }
                                 if (evenCerts != undefined && i < evenCerts.length) {
-                                    var userObjEven = parseDOM(evenCerts[i]);
+                                    var userObjEven = parseMagentoDOM(evenCerts[i], i+1);
                                     userArray.push(userObjEven);
                                 }
                             }
                             return userArray;
-                        }).then(function (certificates) {
-                            resolve({
-                                certficates: certificates
-                            });
-                            _page.close();
-                            _ph.exit();
+                        }
+                    }).then(function (certificates) {
+                        resolve({
+                            certficates: certificates
                         });
-                    //}, 2000);
+                        _page.close();
+                        _ph.exit();
+                    });
                 }).catch(function(e){
                     reject(e);
                 });
@@ -81,30 +88,30 @@ function getUrl(url){
 }
 
 /** HORSEMAN NOTES
-    
-    I only have a single horseman object here, they can be
-     expensive (slow) to create, so I'm just keeping it in
-     memory. This would be terrible in production as it
-     couldn't handle two requests in parallel! Hah!
 
-    You'll also notice I'm not running horseman.close(),
-     doing so would render the horseman useless for
-     subsequent requests.
+ I only have a single horseman object here, they can be
+ expensive (slow) to create, so I'm just keeping it in
+ memory. This would be terrible in production as it
+ couldn't handle two requests in parallel! Hah!
 
-    A nice solution would be to have a pool of horseman
-     that can be accessed like so:
+ You'll also notice I'm not running horseman.close(),
+ doing so would render the horseman useless for
+ subsequent requests.
 
-    getHorseman()
-        .then(function(horseman){
+ A nice solution would be to have a pool of horseman
+ that can be accessed like so:
+
+ getHorseman()
+ .then(function(horseman){
             // ... code here
         })
 
-    Where getHorseman() might: pull an inactive horseman
-     from a pool, wait for an active horseman to finish,
-     or even add a new horseman to the pool. GC would
-     be fun too. You could have methods like
-     sendThisHorseToTheKnackerYard() - funny, and arguably
-     semantic, but you'd be entering the realm of naming
-     inception. Try explaining that to your team in a
-     few years.
+ Where getHorseman() might: pull an inactive horseman
+ from a pool, wait for an active horseman to finish,
+ or even add a new horseman to the pool. GC would
+ be fun too. You could have methods like
+ sendThisHorseToTheKnackerYard() - funny, and arguably
+ semantic, but you'd be entering the realm of naming
+ inception. Try explaining that to your team in a
+ few years.
  */
